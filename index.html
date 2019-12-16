@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SuperHeroes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+</head>
+
+<body class="blue-grey lighten-5" style="background-image: url('img/paper.png');">
+
+
+    <header>
+        <nav>
+            <div class="nav-wrapper red darken-4 ">
+                <a href="#" class="brand-logo center ">NEWS</a>
+            </div>
+        </nav>
+    </header>
+    <BR></BR>
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large red" href="#footer">
+          <i class="large material-icons">arrow_downward</i>
+        </a>
+    </div>
+    <div id="app">
+        <!--------------------------------------MAIN----------------------------------------------->
+        <main style="flex: 1 0 auto;">
+            <div class="row">
+                <div class="row">
+                    <div v-for ="item in noticias">
+                        <div class="col s12 m3 l8 offset-l2" >
+                            <div class="card">
+                                <div class="card-image">
+                                    <img :src="item.urlToImage" >
+                                    <span class="card-title">{{item.title}}</span>
+                                    <button @click="ver_modal(item)" class="btn-floating halfway-fab waves-effect waves-light red">
+                                        <i class="material-icons">remove_red_eye</i>
+                                    </button>
+                                </div>
+                                <div class="card-content">
+                                    <p>{{item.description}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Modal Structure -->
+                <div id="modal1" class="modal">
+                    <div v-if="noticia != null">
+                        <div class="modal-content">
+                            <h4>{{noticia.title}}</h4><br>
+                            <img :src="noticia.urlToImage" class="responsive-img">
+                            <p>{{noticia.content}}</p><br>
+                            <p v-if="noticia.author != null" class="center">
+                                <b> {{noticia.author}}</b>
+                            </p>
+                            <div v-else class="center">
+                                <b>Anónimo</b>
+                            </div>
+                            <p class="center">
+                                <b>{{noticia.publishedAt}}</b>
+                            </p><br>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="#!" class="modal-close waves-effect waves-green btn-flat blue white-text">Cerrar</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+    <!------------------------------------------------------------------------------------->
+    <footer id="footer" class="page-footer red darken-4">
+        <div class="container">
+            <div class="row">
+            <div class="col l6 s12">
+                    <h5 class="white-text" >Síguenos en</h5>
+                    <ul>
+                        <li><a class="grey-text text-lighten-3" href="#!">Facebook</a></li>
+                        <li><a class="grey-text text-lighten-3" href="#!">Instagram</a></li>
+                        <li><a class="grey-text text-lighten-3" href="#!">WhatsAap</a></li>
+                        <li><a class="grey-text text-lighten-3" href="#!">Contactenos!</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright ">
+            <div class="container">
+                © 2019 Desarrollo de Aplicaciones Web
+                <a class="grey-text text-lighten-4 right" href="#!">Creado por Karla Cabañas y Darly Morales</a>
+            </div>
+        </div>
+    </footer>
+    <!------------------------------------------------------------------------------------->
+
+
+
+
+    <!------------------------------------------------IMPORTACIONES---------------------------------------------->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!------------------------------------------------FIN---IMPORTACIONES---------------------------------------->
+
+
+
+
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                noticias : [],
+                url: 'https://newsapi.org/v2/top-headlines?country=us&apiKey=8966b4df653f4d269f6cbb71a3e847a9',// aqui va la api
+                noticia: null
+            },
+            methods: {
+                async cargar() {
+                    var resultado = await axios.get(this.url);
+                    this.noticias = resultado.data.articles;
+                },
+                ver_modal(item){
+                    this.noticia = item;
+                    var instance = M.Modal.getInstance(document.getElementById('modal1'));
+                    instance.open();
+                },
+            },
+            created() {
+                this.cargar();
+            },
+            mounted(){
+                document.addEventListener('DOMContentLoaded', function() {
+                var elems = document.querySelectorAll('.modal');
+                var instances = M.Modal.init(elems);
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    var elems = document.querySelectorAll('.fixed-action-btn');
+                    var instances = M.FloatingActionButton.init(elems);
+                });
+            });
+            }
+
+        });
+
+    </script>
+</body>
+
+</html>
